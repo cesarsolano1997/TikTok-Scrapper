@@ -99,7 +99,10 @@ def main(link_titkok):
 
 if __name__ == "__main__":
     path_root = path.dirname(path.abspath(__file__))
-    cur_dir = "D:\Proyectos GitHub\scrapper\TikTokCommentScraper\links_tiktok.txt"
+    current_path = getcwd()
+    folder_container = path.dirname(current_path)
+    print(folder_container)
+    
     path_folder = path.join(path_root,"csv")
     isExist = path.exists(path_folder)
 
@@ -108,11 +111,11 @@ if __name__ == "__main__":
     if isExist == False:
         mkdir(path_folder)
 
-    with open(cur_dir, 'r') as fr:
+    with open(folder_container, 'r') as fr:
         # reading line by line
         lines = fr.readlines()
     
-        with open(cur_dir, 'w') as fw:
+        with open(folder_container, 'w') as fw:
             for number, line in enumerate(lines):
                 try:
                     print(line)
