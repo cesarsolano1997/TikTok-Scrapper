@@ -1,2 +1,3 @@
 pyperclip
 openpyxl
+undetected_chromedriver
