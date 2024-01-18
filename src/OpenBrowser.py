@@ -1,9 +1,10 @@
 import undetected_chromedriver as uc
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium import webdriver 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 import time
-
+from selenium.webdriver.common.keys import Keys
 import sys
 from csv import reader
 from os import system, getcwd, remove, path, mkdir
@@ -15,26 +16,32 @@ def main(link_titkok):
     if link_titkok == None:
         return
 
-    options = uc.ChromeOptions()
+    options = uc.ChromeOptions() 
+    options.headless = False
 
-    driver = uc.Chrome(capabilities={"alwaysMatch": {"timeouts": {"script": 150000}}})
+    # Configure the undetected_chromedriver options
+    driver = uc.Chrome(options=options) 
     try:
-
         driver.implicitly_wait(200)   
         driver.get(str(link_titkok))
         time.sleep(3)
 
 
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(4)
+        body = driver.find_element(By.XPATH, "/html/body")
+        body.send_keys(Keys.ESCAPE)
+        time.sleep(2)
 
         # Pause video
-        driver.execute_script("document.querySelector('.tiktok-q1bwae-DivPlayIconContainer').click()")
+        driver.execute_script("document.querySelector('.css-q1bwae-DivPlayIconContainer').click()")
 
+
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(4)
         # Aumentar el tiempo de espera de execute_script
         driver.set_script_timeout(300)
         # Read File JS for scrapper comments
-        scrapper = driver.execute_script(open("D:\Proyectos GitHub\scrapper\TikTokCommentScraper\src\ScrapeTikTokComments.js").read())
+        print('Open JS')
+        scrapper = driver.execute_script(open(".\ScrapeTikTokComments.js").read())
 
         # COPY IN CSV
 
@@ -94,19 +101,19 @@ def main(link_titkok):
 
         #time.sleep(20)
         driver.quit()
-    except:
+    except Exception as e:
       driver.quit()
+      print(e)
 
 if __name__ == "__main__":
     path_root = path.dirname(path.abspath(__file__))
     current_path = getcwd()
-    folder_container = path.dirname(current_path)
-    print(folder_container)
+    folder_container = path.dirname(current_path) + "\links_tiktok.txt"
+
     
     path_folder = path.join(path_root,"csv")
     isExist = path.exists(path_folder)
 
-    print(isExist)
 
     if isExist == False:
         mkdir(path_folder)
@@ -125,5 +132,5 @@ if __name__ == "__main__":
                     if number not in [number]:
                         fw.write(line)
               
-                except:
-                    print("Oops! something error")   
+                except Exception as error:
+                    print("Oops! something error",error)   
